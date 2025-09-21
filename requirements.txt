@@ -1,0 +1,10 @@
+Django>=4.2
+djangorestframework
+psycopg2-binary
+python-decouple
+dj-database-url
+google-auth
+africastalking
+sentry-sdk
+coverage
+pytest
