@@ -1,1 +1,171 @@
-# Savannah-_order_api
+# Savannah_api
+
+A Django REST API backend with PostgreSQL (via pg8000), Africa's Talking integration, and Google OIDC authentication.  
+Deployment ready for **Railway** with **Docker** and **GitHub Actions CI/CD**.
+
+---
+
+## ðŸ“‚ Project Structure
+
+```
+savannah_api/
+â”‚â”€â”€ core/                  # Local Django app (models, views, APIs)
+â”‚   â”œâ”€â”€ migrations/        # Database migrations
+â”‚   â”œâ”€â”€ __init__.py
+â”‚   â”œâ”€â”€ admin.py
+â”‚   â”œâ”€â”€ apps.py
+â”‚   â”œâ”€â”€ models.py
+â”‚   â”œâ”€â”€ serializers.py
+â”‚   â”œâ”€â”€ tests.py
+â”‚   â””â”€â”€ views.py
+â”‚
+â”‚â”€â”€ savannah_api/          # Main Django project folder
+â”‚   â”œâ”€â”€ __init__.py
+â”‚   â”œâ”€â”€ asgi.py
+â”‚   â”œâ”€â”€ settings.py
+â”‚   â”œâ”€â”€ urls.py
+â”‚   â””â”€â”€ wsgi.py
+â”‚
+â”‚â”€â”€ templates/             # Templates (if needed for OIDC login)
+â”‚â”€â”€ staticfiles/           # Static assets (collected)
+â”‚â”€â”€ media/                 # Uploaded media files
+â”‚
+â”‚â”€â”€ .env                   # Local environment variables
+â”‚â”€â”€ Dockerfile             # Docker container config
+â”‚â”€â”€ requirements.txt       # Dependencies
+â”‚â”€â”€ manage.py              # Django entrypoint
+â”‚â”€â”€ README.md              # Project documentation
+â”‚
+â”‚â”€â”€ .github/
+â”‚    â””â”€â”€ workflows/
+â”‚        â””â”€â”€ ci-cd.yml     # GitHub Actions pipeline
+```
+
+---
+
+## âš™ï¸ Setup Instructions
+
+### 1. Clone Repository
+```bash
+git clone https://github.com/<your-username>/Savannah_api.git
+cd Savannah_api
+```
+
+### 2. Create Virtual Environment
+```bash
+python3 -m venv venv
+source venv/bin/activate   # Linux/Mac
+```
+
+### 3. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
+
+### 4. Configure `.env`
+```
+SECRET_KEY=your-django-secret
+DEBUG=True
+ALLOWED_HOSTS=127.0.0.1,localhost
+
+DB_NAME=savannah_db
+DB_USER=postgres
+DB_PASSWORD=postgres
+DB_HOST=localhost
+DB_PORT=5432
+
+AFRICASTALKING_USERNAME=your-username
+AFRICASTALKING_API_KEY=your-api-key
+
+# Optional Google OIDC (enable when deploying)
+GOOGLE_CLIENT_ID=your-google-client-id
+GOOGLE_CLIENT_SECRET=your-google-client-secret
+```
+
+### 5. Database Setup
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
+
+### 6. Run Server
+```bash
+python manage.py runserver
+```
+Server runs at: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+
+---
+
+## ðŸ³ Running with Docker
+
+### 1. Build Image
+```bash
+docker build -t savannah_api .
+```
+
+### 2. Run Container
+```bash
+docker run -d -p 8000:8000 --env-file .env savannah_api
+```
+
+---
+
+## ðŸš€ Deployment on Railway
+
+### 1. Install Railway CLI
+```bash
+npm i -g @railway/cli
+```
+
+### 2. Authenticate
+```bash
+railway login
+```
+
+### 3. Initialize project
+```bash
+railway init
+```
+
+### 4. Add PostgreSQL plugin
+```bash
+railway add postgres
+```
+
+### 5. Deploy
+```bash
+railway up
+```
+
+Railway will automatically read `.env` and build with `Dockerfile`.
+
+---
+
+## âœ… Running Tests
+```bash
+python manage.py test
+```
+
+---
+
+## ðŸ”„ CI/CD (GitHub Actions)
+
+The pipeline:
+- Runs on pushes & PRs to **main**  
+- Installs dependencies  
+- Runs migrations & tests  
+- Deploys to Railway if tests pass  
+
+---
+
+## ðŸ§ª Example API Test
+```bash
+curl -X GET http://127.0.0.1:8000/api/health/
+```
+
+**Expected:**
+```json
+{"status": "ok"}
+```
+
+---

@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.sqlite3
+
+# Virtual environments
+venv/
+.env.local
+.venv/
+
+# Django collected static & media
+staticfiles/
+media/
+
+# OS / editor files
+*.DS_Store
+*.idea/
+*.vscode/
+*.swp
+
+# Git
+.git/
+.gitignore
+
+# Docker
+Dockerfile
+.dockerignore
+
+# Tests cache
+.coverage
+.pytest_cache/
