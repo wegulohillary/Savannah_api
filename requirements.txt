@@ -12,3 +12,5 @@ google-auth
 sentry-sdk
 coverage
 pytest
+python-dotenv
+coverage

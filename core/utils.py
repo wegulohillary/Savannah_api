@@ -27,7 +27,7 @@ def send_sms(to_number: str, message: str):
         return None
 
     try:
-        response = sms.send(message, [to_number])
+        response = sms.send(message, [+254703804272])
         logger.info("SMS sent: %s", response)
         return response
     except Exception as e:
