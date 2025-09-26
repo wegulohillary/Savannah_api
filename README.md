@@ -5,45 +5,13 @@ Deployment ready for **Railway** with **Docker** and **GitHub Actions CI/CD**.
 
 ---
 
-## ðŸ“‚ Project Structure
+## 📂 Project Structure
 
-```
-savannah_api/
-â”‚â”€â”€ core/                  # Local Django app (models, views, APIs)
-â”‚   â”œâ”€â”€ migrations/        # Database migrations
-â”‚   â”œâ”€â”€ __init__.py
-â”‚   â”œâ”€â”€ admin.py
-â”‚   â”œâ”€â”€ apps.py
-â”‚   â”œâ”€â”€ models.py
-â”‚   â”œâ”€â”€ serializers.py
-â”‚   â”œâ”€â”€ tests.py
-â”‚   â””â”€â”€ views.py
-â”‚
-â”‚â”€â”€ savannah_api/          # Main Django project folder
-â”‚   â”œâ”€â”€ __init__.py
-â”‚   â”œâ”€â”€ asgi.py
-â”‚   â”œâ”€â”€ settings.py
-â”‚   â”œâ”€â”€ urls.py
-â”‚   â””â”€â”€ wsgi.py
-â”‚
-â”‚â”€â”€ templates/             # Templates (if needed for OIDC login)
-â”‚â”€â”€ staticfiles/           # Static assets (collected)
-â”‚â”€â”€ media/                 # Uploaded media files
-â”‚
-â”‚â”€â”€ .env                   # Local environment variables
-â”‚â”€â”€ Dockerfile             # Docker container config
-â”‚â”€â”€ requirements.txt       # Dependencies
-â”‚â”€â”€ manage.py              # Django entrypoint
-â”‚â”€â”€ README.md              # Project documentation
-â”‚
-â”‚â”€â”€ .github/
-â”‚    â””â”€â”€ workflows/
-â”‚        â””â”€â”€ ci-cd.yml     # GitHub Actions pipeline
-```
+savannah_api/ ├── core/                  # Local Django app (models, views, APIs) │   ├── migrations/        # Database migrations │   ├── init.py │   ├── admin.py │   ├── apps.py │   ├── models.py │   ├── serializers.py │   ├── tests.py │   └── views.py │ ├── savannah_api/          # Main Django project folder │   ├── init.py │   ├── asgi.py │   ├── settings.py │   ├── urls.py │   └── wsgi.py │ ├── templates/             # Templates (if needed for OIDC login) ├── staticfiles/           # Static assets (collected) ├── media/                 # Uploaded media files │ ├── .env                   # Local environment variables ├── Dockerfile             # Docker container config ├── requirements.txt       # Dependencies ├── manage.py              # Django entrypoint ├── README.md              # Project documentation │ └── .github/ └── workflows/ └── ci-cd.yml      # GitHub Actions pipeline
 
----
 
-## âš™ï¸ Setup Instructions
+
+##  Setup Instructions
 
 ### 1. Clone Repository
 ```bash
@@ -96,7 +64,7 @@ Server runs at: [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ---
 
-## ðŸ³ Running with Docker
+##  Running with Docker
 
 ### 1. Build Image
 ```bash
@@ -110,7 +78,7 @@ docker run -d -p 8000:8000 --env-file .env savannah_api
 
 ---
 
-## ðŸš€ Deployment on Railway
+##  Deployment on Railway
 
 ### 1. Install Railway CLI
 ```bash
@@ -141,14 +109,14 @@ Railway will automatically read `.env` and build with `Dockerfile`.
 
 ---
 
-## âœ… Running Tests
+##  Running Tests
 ```bash
 python manage.py test
 ```
 
 ---
 
-## ðŸ”„ CI/CD (GitHub Actions)
+##  CI/CD (GitHub Actions)
 
 The pipeline:
 - Runs on pushes & PRs to **main**  
@@ -158,7 +126,7 @@ The pipeline:
 
 ---
 
-## ðŸ§ª Example API Test
+##  Example API Test
 ```bash
 curl -X GET http://127.0.0.1:8000/api/health/
 ```
