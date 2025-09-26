@@ -9,6 +9,7 @@ Deployment ready for **Railway** with **Docker** and **GitHub Actions CI/CD**.
 
 savannah_api/ ├── core/                  # Local Django app (models, views, APIs) │   ├── migrations/        # Database migrations │   ├── init.py │   ├── admin.py │   ├── apps.py │   ├── models.py │   ├── serializers.py │   ├── tests.py │   └── views.py │ ├── savannah_api/          # Main Django project folder │   ├── init.py │   ├── asgi.py │   ├── settings.py │   ├── urls.py │   └── wsgi.py │ ├── templates/             # Templates (if needed for OIDC login) ├── staticfiles/           # Static assets (collected) ├── media/                 # Uploaded media files │ ├── .env                   # Local environment variables ├── Dockerfile             # Docker container config ├── requirements.txt       # Dependencies ├── manage.py              # Django entrypoint ├── README.md              # Project documentation │ └── .github/ └── workflows/ └── ci-cd.yml      # GitHub Actions pipeline
 
+---
 
 
 ##  Setup Instructions
