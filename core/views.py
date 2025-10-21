@@ -8,12 +8,18 @@ from .utils import send_sms
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
+    """
+    Handles customer CRUD operations.
+    """
     queryset = Customer.objects.all().order_by("id")
     serializer_class = CustomerSerializer
     permission_classes = [IsAuthenticated]
 
 
 class OrderViewSet(viewsets.ModelViewSet):
+    """
+    Handles order CRUD operations with SMS notification on creation.
+    """
     queryset = Order.objects.all().order_by("-time")
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
@@ -27,8 +33,8 @@ class OrderViewSet(viewsets.ModelViewSet):
         customer = order.customer
         if customer.phone_number:
             message = (
-                f"Hi {customer.name}, we received your order "
-                f"({order.item}) for amount {order.amount}."
+                f"Hi {customer.name}, we received your order for "
+                f"{order.item} worth {order.amount}."
             )
             send_sms(customer.phone_number, message)
 
@@ -36,21 +42,24 @@ class OrderViewSet(viewsets.ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
 
 
-# 👇 Add a simple test endpoint
 @api_view(["GET"])
-@permission_classes([AllowAny])  # no auth needed for testing
+@permission_classes([AllowAny])
 def test_sms(request):
-    """Test sending SMS via Africa's Talking."""
-    phone = request.query_params.get("phone", None)
+    """
+    Simple endpoint to test Africa's Talking SMS integration.
+    Example: /api/test-sms/?phone=+2547XXXXXXX
+    """
+    phone = request.query_params.get("phone")
     if not phone:
         return Response(
-            {"error": "Please provide a phone number using ?phone=NUMBER"},
+            {"error": "Please provide ?phone=NUMBER"},
             status=status.HTTP_400_BAD_REQUEST,
         )
 
     message = "Hello from Savannah_api test endpoint 🚀"
-    try:
-        send_sms(phone, message)
+    response = send_sms(phone, message)
+
+    if response:
         return Response({"status": "SMS sent successfully", "phone": phone})
-    except Exception as e:
-        return Response({"error": str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    else:
+        return Response({"error": "SMS sending failed"}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)

@@ -11,3 +11,8 @@ class OrderSerializer(serializers.ModelSerializer):
         model = Order
         fields = ["id", "customer", "item", "amount", "time"]
         read_only_fields = ["time"]
+
+    def validate_amount(self, value):
+        if value < 0:
+            raise serializers.ValidationError("Amount must be non-negative.")
+        return value
