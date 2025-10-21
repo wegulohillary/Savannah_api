@@ -16,18 +16,27 @@ try:
 except Exception:
     sms = None
 
+
 def send_sms(to_number: str, message: str):
     """
     Send an SMS using Africa's Talking.
     to_number should be in international format, e.g., +2547XXXXXXXX.
-    If sms is not configured, it logs and returns None for test/dev.
+    If sms is not configured, it logs and returns None (useful for tests/dev).
     """
-    if not sms:
-        logger.warning("Africa's Talking SMS client not configured. Would send to %s: %s", to_number, message)
+    if not to_number:
+        logger.warning("No recipient phone number provided.")
         return None
 
+    if not sms:
+        logger.info("[TEST MODE] Would send SMS to %s: %s", to_number, message)
+        return {
+            "status": "simulated",
+            "to": to_number,
+            "message": message,
+        }
+
     try:
-        response = sms.send(message, [+254703804272])
+        response = sms.send(message, [to_number])
         logger.info("SMS sent: %s", response)
         return response
     except Exception as e:

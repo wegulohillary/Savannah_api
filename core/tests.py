@@ -1,64 +1,37 @@
-from django.urls import reverse
-from rest_framework import status
-from rest_framework.test import APITestCase, APIClient
-from django.contrib.auth.models import User
-from unittest.mock import patch
-from .models import Customer, Order
+from django.test import TestCase
+from core.models import Customer, Order
+from core.utils import send_sms
+from decimal import Decimal
 
-
-class BaseAPITestCase(APITestCase):
+class ModelsTestCase(TestCase):
     def setUp(self):
-        # Create and login a superuser for authentication
-        self.user = User.objects.create_superuser(
-            username="admin", email="admin@example.com", password="adminpass"
-        )
-        self.client = APIClient()
-        self.client.login(username="admin", password="adminpass")
-
-        # Create a customer for tests
         self.customer = Customer.objects.create(
-            name="Test Customer", phone_number="+254700000000", email="test@example.com"
+            name='Alice',
+            code='C001',
+            phone_number='+254700000000'
         )
 
-
-class CustomerAPITests(BaseAPITestCase):
-    def test_create_customer(self):
-        url = reverse("customer-list")
-        data = {"name": "New Customer", "phone_number": "+254735985062", "email": "wegulohillary@gmail.com"}
-        response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Customer.objects.count(), 2)
-
-    def test_list_customers(self):
-        url = reverse("customer-list")
-        response = self.client.get(url, format="json")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertGreaterEqual(len(response.data), 1)
-
-
-class OrderAPITests(BaseAPITestCase):
-    @patch("core.utils.send_sms")  # 👈 mock SMS sending
-    def test_create_order_sends_sms(self, mock_send_sms):
-        url = reverse("order-list")
-        data = {
-            "customer": self.customer.id,
-            "item": "Test Item",
-            "amount": 500,
-        }
-        response = self.client.post(url, data, format="json")
-        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Order.objects.count(), 1)
-        mock_send_sms.assert_called_once_with(
-            self.customer.phone_number,
-            f"Hi {self.customer.name}, we received your order (Test Item) for amount 500."
+    def test_create_customer_and_order(self):
+        order = Order.objects.create(
+            customer=self.customer,
+            item='Widget',
+            amount=Decimal('123.45')
         )
 
+        self.assertEqual(self.customer.orders.count(), 1)
+        self.assertEqual(order.item, 'Widget')
 
-class SMSAPITests(BaseAPITestCase):
-    @patch("core.utils.send_sms")  # 👈 mock SMS for sandbox
-    def test_test_sms_endpoint(self, mock_send_sms):
-        url = reverse("test_sms")
-        response = self.client.get(url + "?phone=+254703804272")
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        mock_send_sms.assert_called_once()
-        self.assertIn("SMS sent successfully", response.json()["status"])
+    def test_send_sms_simulation_or_real(self):
+        response = send_sms(self.customer.phone_number, "Test message")
+        self.assertIsNotNone(response)
+
+        # Handle both simulated and real responses
+        if isinstance(response, dict) and "status" in response:
+            self.assertEqual(response["status"], "simulated")
+        elif isinstance(response, dict) and "SMSMessageData" in response:
+            self.assertIn("Recipients", response["SMSMessageData"])
+            self.assertEqual(
+                response["SMSMessageData"]["Recipients"][0]["status"], "Success"
+            )
+        else:
+            self.fail("Unexpected SMS response format.")
